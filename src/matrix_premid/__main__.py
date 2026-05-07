@@ -865,6 +865,10 @@ def parse_args(args=None):
         description="Matrix Presence/PreMiD Updater",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""\
+configuration:
+  %(prog)s install-service   create config and systemd user service
+  config file                ~/.config/matrix-premid/config.json
+
 token management (via keyring):
   add/update   python -m keyring set matrix-premid @user:example.com
   view         python -m keyring get matrix-premid @user:example.com
