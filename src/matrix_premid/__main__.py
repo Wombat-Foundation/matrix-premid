@@ -861,7 +861,16 @@ WantedBy=default.target
 
 def parse_args(args=None):
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Matrix Presence/PreMiD Updater")
+    parser = argparse.ArgumentParser(
+        description="Matrix Presence/PreMiD Updater",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""\
+token management (via keyring):
+  add/update   python -m keyring set matrix-premid @user:example.com
+  view         python -m keyring get matrix-premid @user:example.com
+  remove       python -m keyring del matrix-premid @user:example.com
+""",
+    )
     parser.add_argument(
         "command",
         nargs="?",
