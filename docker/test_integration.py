@@ -135,10 +135,25 @@ def test_integration():
     # Prepend mock_dir so subprocess picks up our fake playerctl instead of real one
     env["PATH"] = f"{mock_dir}:{env['PATH']}"
     env["PREMID_LOCK_FILE"] = os.path.join(mock_dir, "test.lock")
-    env["HOMESERVER"] = "http://localhost:8008"
-    env["USERNAME"] = user_id
-    env["ACCESS_TOKEN"] = token
-    env["DEVICE_ID"] = device_id
+
+    # Write a temporary config.json for the daemon (main() reads config, not env vars)
+    ci_config = {
+        "accounts": [
+            {
+                "homeserver": "http://localhost:8008",
+                "username": user_id,
+                "access_token": token,
+                "device_id": device_id,
+                "enabled": True,
+            }
+        ],
+        "idle_timeout": 15,
+        "poll_interval": 5,
+    }
+    config_path = os.path.join(mock_dir, "config.json")
+    with open(config_path, "w", encoding="utf-8") as f:
+        json.dump(ci_config, f)
+    env["PREMID_CONFIG"] = config_path
 
     proc = subprocess.Popen([sys.executable, "-m", "matrix_premid"], env=env)
 

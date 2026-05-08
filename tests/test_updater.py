@@ -539,3 +539,20 @@ def test_install_service_flow(mock_run, _mock_open, _mock_makedirs, _mock_which)
         install_service()
     assert _mock_makedirs.called
     assert mock_run.called
+
+
+@pytest.mark.asyncio
+async def test_send_update_uses_custom_presence():
+    """Test that non-default current_presence propagates to the presence payload."""
+    session = FakeSession()
+    u = MatrixStatusUpdater("http://mock", "@test:mock", "tok", "dev", session=session)
+    u.current_presence = "unavailable"
+
+    await u.send_update("Listening to: Song")
+
+    # Find the presence PUT call and verify the payload
+    presence_puts = [(url, kwargs) for url, kwargs in session.puts if "presence" in url]
+    assert len(presence_puts) == 1
+    _, kwargs = presence_puts[0]
+    assert kwargs["json"]["presence"] == "unavailable"
+    await u.close()

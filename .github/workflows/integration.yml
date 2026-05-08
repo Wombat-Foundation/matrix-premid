@@ -36,7 +36,7 @@ jobs:
         run: |
           echo "Waiting for Conduwuit to be ready..."
           for i in {1..30}; do
-            if curl -s http://localhost:8008/_matrix/client/versions > /dev/null; then
+            if curl -fsS http://localhost:8008/_matrix/client/versions > /dev/null 2>&1; then
               echo "Conduwuit Ready!"
               exit 0
             fi

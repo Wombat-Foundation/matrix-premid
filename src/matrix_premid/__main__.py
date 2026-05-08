@@ -901,6 +901,15 @@ token management (via keyring):
         action="store_true",
         help="Manually clear status (Offline) and exit",
     )
+    parser.add_argument(
+        "--config",
+        default=os.environ.get(
+            "PREMID_CONFIG",
+            os.path.expanduser("~/.config/matrix-premid/config.json"),
+        ),
+        help="Path to config.json (default: ~/.config/matrix-premid/config.json, "
+        "or PREMID_CONFIG env var)",
+    )
     argcomplete.autocomplete(parser)
     return parser.parse_args(args)
 
@@ -929,7 +938,7 @@ async def main(args=None):
     poll_interval = 5
 
     # Load configuration
-    config_file = os.path.expanduser("~/.config/matrix-premid/config.json")
+    config_file = args.config
     if not os.path.exists(config_file):
         print(
             "ERROR: Missing configuration. Please run 'matrix-premid install-service' "
