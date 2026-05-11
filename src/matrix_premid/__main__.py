@@ -371,8 +371,8 @@ class MatrixStatusUpdater:
                             if resp.status == 401:
                                 print(
                                     f"HINT [{self.username}]: Token may be invalid. "
-                                    "Update it using: python -m keyring set "
-                                    f" matrix-premid {self.username}",
+                                    f"Update it using: {sys.executable} -m keyring set "
+                                    f"matrix-premid {self.username}",
                                     file=sys.stderr,
                                 )
                 except Exception as e:  # pylint: disable=broad-exception-caught
@@ -402,7 +402,7 @@ class MatrixStatusUpdater:
                             if resp.status == 401:
                                 print(
                                     f"HINT [{self.username}]: Token may be invalid. "
-                                    "Update it using: python -m keyring set "
+                                    f"Update it using: {sys.executable} -m keyring set "
                                     f"matrix-premid {self.username}",
                                     file=sys.stderr,
                                 )
@@ -967,7 +967,7 @@ async def main(args=None):
             else:
                 print(
                     f"ERROR: Missing access token for {account['username']}. "
-                    "Set it using: python -m keyring set matrix-premid "
+                    f"Set it using: {sys.executable} -m keyring set matrix-premid "
                     f"{account['username']}",
                     file=sys.stderr,
                 )
