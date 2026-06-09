@@ -23,22 +23,21 @@ If you want to run this constantly in the background as a Linux service, indepen
       git clone https://github.com/user/matrix-premid
       cd matrix-premid
 
-2. Configure your credentials locally (or edit later):
-
-   .. code-block:: bash
-
-      cp .env.example .env
-      nano .env
-
-   *(Note: If you populate the ``.env`` file locally before installing, the installer will automatically copy and use it for the background service.)*
-
-3. Install the script, systemd service, and dependencies globally to ``/opt``:
+2. Install the script, systemd user service, and dependencies globally to ``/opt``:
 
    .. code-block:: bash
 
       make install
 
-   This creates the directory ``/opt/matrix-premid``, copies the script and ``.env`` there, sets up an isolated Python virtual environment exclusively for the service, and symlinks the script to ``/usr/local/bin/matrix-premid``. The systemd service is placed in ``/etc/systemd/system/``.
+   This creates the directory ``/opt/matrix-premid``, sets up an isolated Python virtual environment exclusively for the service, symlinks the script to ``/usr/local/bin/matrix-premid``, and automatically initializes a systemd user service and config template for your user account.
+
+3. Edit your configuration file at ``~/.config/matrix-premid/config.json`` to add your homeserver and username.
+
+4. Store your Matrix access token in the system keyring:
+
+   .. code-block:: bash
+
+      python -m keyring set matrix-premid @username:domain.com
 
 User Installation
 -----------------
@@ -55,8 +54,16 @@ Basic Usage
 -----------
 
 1. **Install dependencies**: ``pip install .`` (or use installation methods above).
-2. **Setup environment**: Place your ``.env`` file in the current directory or at ``~/.config/matrix-premid/.env``.
-3. **Run the script**: ``matrix-premid``
+2. **Setup configuration**: Create your configuration file at ``~/.config/matrix-premid/config.json``. You can use ``matrix-premid install-service`` to generate a default template, or copy ``config.template.json`` from this repository to that location.
+3. **Store credentials**: For security, store your Matrix access token in your system keyring rather than putting it in plain text inside the config file:
+
+   .. code-block:: bash
+
+      python -m keyring set matrix-premid @username:domain.com
+
+   *(Alternatively, for non-interactive setups like CI, you can set the ``access_token`` directly in the ``accounts`` section of ``config.json``).*
+
+4. **Run the script**: ``matrix-premid``
 
 Command-line Options
 --------------------
@@ -84,23 +91,30 @@ Development / Local Running
 
 If you want to run the script locally from the folder (for testing or development) without installing it system-wide:
 
-1. Clone the repository and configure your environment:
+1. Clone the repository and configure your configuration:
 
    .. code-block:: bash
 
       git clone https://github.com/user/matrix-premid
       cd matrix-premid
-      cp .env.example .env
+      mkdir -p ~/.config/matrix-premid
+      cp config.template.json ~/.config/matrix-premid/config.json
 
-   Edit the ``.env`` file and fill in your Matrix credentials. Make sure to export them to your shell (e.g., using ``direnv allow`` or sourcing the file) because the script reads directly from ``os.environ``.
+   Edit the ``~/.config/matrix-premid/config.json`` file to set your Matrix username and homeserver.
 
-2. Install development dependencies:
+2. Store your Matrix access token in the system keyring:
+
+   .. code-block:: bash
+
+      python -m keyring set matrix-premid @your_username:homeserver.com
+
+3. Install development dependencies:
 
    .. code-block:: bash
 
       make deps
 
-3. Run the script directly:
+4. Run the script directly:
 
    .. code-block:: bash
 

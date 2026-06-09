@@ -20,6 +20,7 @@ import shutil
 import signal
 import subprocess
 import sys
+import urllib.parse
 from dataclasses import dataclass
 from typing import Dict, Optional
 
@@ -248,15 +249,18 @@ class MatrixStatusUpdater:
             # or we are exiting.
             return
 
+        if activity.startswith("Idle"):
+            activity = "Idle"
+
         # Determine metadata quality
         quality = 0
         if activity.startswith("Listening to:") or activity.startswith("Watching:"):
             quality = 20 if " - " in activity else 10
-            if "YT Music" in activity:
+            if "YT Music" in activity or "YouTube Music" in activity:
                 quality += 1
         elif activity.startswith("Paused:"):
             quality = 6 if " - " in activity else 4
-            if "YT Music" in activity:
+            if "YT Music" in activity or "YouTube Music" in activity:
                 quality += 1
         elif activity != "Idle" and not activity.startswith("Idle") and activity != "":
             quality = 10
@@ -322,10 +326,12 @@ class MatrixStatusUpdater:
             session = await self._get_session()
             headers = {"Authorization": f"Bearer {self.access_token}"}
 
+            encoded_username = urllib.parse.quote(self.username)
+
             # 1. Presence Payload
             url_p = (
                 f"{self.homeserver}/_matrix/client/v3/presence/"
-                f"{self.username}/status"
+                f"{encoded_username}/status"
             )
 
             if is_exit:
@@ -336,13 +342,14 @@ class MatrixStatusUpdater:
             else:
                 payload_p = {
                     "presence": self.current_presence,
+                    "status_msg": "",
                 }
                 if activity and activity != "Idle":
                     payload_p["status_msg"] = activity
 
             # 2. Element Status Payload
             url_s = (
-                f"{self.homeserver}/_matrix/client/v3/user/{self.username}/"
+                f"{self.homeserver}/_matrix/client/v3/user/{encoded_username}/"
                 "account_data/im.vector.user_status"
             )
 
@@ -660,7 +667,15 @@ def _get_best_mpris_activity(lines: list[str]) -> tuple[str, str]:
         has_real_artist = bool(
             clean_raw_artist and clean_raw_artist.lower() not in banned_artists
         )
-        has_time = bool(raw_pos and raw_len)
+        has_time = False
+        try:
+            if raw_pos and raw_len:
+                pos_val = float(raw_pos)
+                len_val = float(raw_len)
+                if pos_val >= 0 and len_val > 0:
+                    has_time = True
+        except (ValueError, TypeError):
+            pass
 
         quality = 0
         if status == "Paused":
@@ -756,6 +771,8 @@ async def monitor_mpris(
             if updaters and updaters[0].verbose:  # pragma: no cover
                 print(f"DEBUG: raw playerctl lines: {lines}", flush=True)
             activity, title = _get_best_mpris_activity(lines)
+            if not activity:
+                activity = "Idle"
 
             updates_by_status = {}
             disabled_users = []
