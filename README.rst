@@ -36,7 +36,7 @@ If you want to run this constantly in the background as a Linux service, indepen
 
    .. code-block:: bash
 
-      sudo make install
+      make install
 
    This creates the directory ``/opt/matrix-premid``, copies the script and ``.env`` there, sets up an isolated Python virtual environment exclusively for the service, and symlinks the script to ``/usr/local/bin/matrix-premid``. The systemd service is placed in ``/etc/systemd/system/``.
 
@@ -47,9 +47,9 @@ Alternatively, you can install the package to your user site-packages:
 
 .. code-block:: bash
 
-   make install-user
+   pip install --user .
 
-This will install the ``matrix-premid`` command to your ``~/.local/bin``.
+This will install the ``matrix-premid`` command to your ``~/.local/bin`` (make sure ``~/.local/bin`` is on your ``PATH``).
 
 Basic Usage
 -----------
@@ -61,7 +61,7 @@ Basic Usage
 Command-line Options
 --------------------
 
-* ``--unset`` or ``--clear``: Manually clear status to AFK (unavailable) and exit.
+* ``--unset`` or ``--clear``: Manually set Matrix presence to ``offline``, clear the status message/account data, and exit.
 * ``--debug``: Enable verbose debug logging.
 * ``--help``: Show all available options.
 

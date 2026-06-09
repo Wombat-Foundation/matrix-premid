@@ -26,7 +26,7 @@ install: ##H Install locally and setup systemd user service
 	sudo /opt/matrix-premid/venv/bin/pip install .
 	sudo ln -sf /opt/matrix-premid/venv/bin/matrix-premid /usr/local/bin/matrix-premid
 	@echo "Setting up systemd service..."
-	/usr/local/bin/matrix-premid install-service
+	if [ -n "$$SUDO_USER" ]; then sudo -u "$$SUDO_USER" /usr/local/bin/matrix-premid install-service; else /usr/local/bin/matrix-premid install-service; fi
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Unit tests and local running

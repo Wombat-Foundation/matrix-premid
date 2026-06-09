@@ -23,6 +23,8 @@ jobs:
         run: |
           make init
           make deps
+          . .venv/bin/activate
+          pip install .
           echo "$PWD/.venv/bin" >> $GITHUB_PATH
 
       - name: Start Conduwuit Configured Homeserver
@@ -47,4 +49,5 @@ jobs:
 
       - name: Run CI Integration Tests
         run: |
+          export PYTHONPATH="$PWD/src:${PYTHONPATH}"
           PYTHONPATH=src python docker/test_integration.py
