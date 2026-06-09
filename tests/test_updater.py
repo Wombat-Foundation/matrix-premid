@@ -1,4 +1,10 @@
-"""Tests for MatrixStatusUpdater and monitor_mpris."""
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Mar 29 00:33:45 2026
+
+@author: shane
+Tests for MatrixStatusUpdater and monitor_mpris.
+"""
 
 # pylint: disable=protected-access,no-member,redefined-outer-name,broad-exception-caught
 

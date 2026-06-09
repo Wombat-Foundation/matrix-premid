@@ -2,12 +2,13 @@
 """
 Created on Sun Mar 29 00:33:45 2026
 
-@author: @gg:nutra.tk
+@author: shane
+Test the configuration parsing logic.
 """
 
-from matrix_premid.__main__ import ProviderConfig
-
 # pylint: disable=missing-function-docstring
+
+from matrix_premid.__main__ import ProviderConfig
 
 
 def test_load_custom_providers():

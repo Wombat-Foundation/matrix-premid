@@ -1,8 +1,14 @@
-"""Unit tests for the project."""
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Mar 29 00:33:45 2026
 
-from matrix_premid.__main__ import SEP_STR, _get_best_mpris_activity, parse_mpris_data
+@author: shane
+Unit tests for the project.
+"""
 
 # pylint: disable=missing-docstring,line-too-long
+
+from matrix_premid.__main__ import SEP_STR, _get_best_mpris_activity, parse_mpris_data
 
 
 def test_get_best_mpris_activity_idle():
