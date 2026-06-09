@@ -1,8 +1,0 @@
-[global]
-server_name = "localhost"
-allow_registration = true
-registration_token = "ci_test_token"
-force_disable_first_run_mode = true
-database_path = "/tmp/conduwuit"
-address = "0.0.0.0"
-port = 8008
