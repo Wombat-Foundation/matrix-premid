@@ -91,7 +91,7 @@ publish: build ##H Upload the package to PyPI using twine
 
 .PHONY: clean
 clean: ##H Clean the virtual environment and caches
-	rm -rf $(VENV)
+	#rm -rf $(VENV)
 	find . -type f -name '*.pyc' -delete
 	find . -type d -name '__pycache__' -exec rm -rf {} +
 	rm -rf .mypy_cache
